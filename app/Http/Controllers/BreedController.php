@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\{Breed, BreedClient};
 use Illuminate\Support\Arr;
 use App\Http\Resources\BreedResource;
+use Illuminate\Support\Facades\Redis;
 
 
 class BreedController extends Controller
@@ -13,13 +14,26 @@ class BreedController extends Controller
 
     public function index()
     {
-        $breeds = Breed::all();
+        $breeds = Breed::all()->each(function($breed){
+            Redis::set('breed_' . $breed->id, $breed);
+        });
+
         return BreedResource::collection($breeds);
     }
 
-    public function show(Breed $breed)
+    public function show($breed_id)
     {
-        return response()->json(['data' => new BreedResource($breed->with(['users','parks'])->get())], 200);
+        $cachedBreed = Redis::get('breed_' . $breed_id);
+
+        if(isset($cachedBreed)) {
+            $breed = json_decode($cachedBreed, FALSE);
+            return response()->json(['message'=>'from cache','data' =>$breed], 200);
+        
+        }else {
+            $breed = Breed::find($breed_id);
+            Redis::set('breed_' . $id, $breed->with(['users', 'parks']));
+            return response()->json(['message'=>'from db','data' => new BreedResource($breed->with(['users','parks'])->get())], 200);
+        }       
     }
 
     public function store(Request $request)
@@ -29,6 +43,9 @@ class BreedController extends Controller
         ]);
 
         $breed = Breed::create($data);
+        
+        Redis::set('breed_' . $breed->id, $breed);
+        
         return response()->json(['created' => true, 'data' => new BreedResource($breed)], 201);
     }
 
@@ -40,12 +57,15 @@ class BreedController extends Controller
 
         $breed->update($data);
 
+        Redis::del('breed_' . $breed->id);
+        Redis::set('breed_' . $breed->id, $breed);
         return response()->json(['updated' => true, 'data' => new BreedResource($breed)], 200);
     }
 
     public function destroy(Breed $breed)
     {
         $breed->delete();
+        Redis::del('breed_' . $breed->id);
         return response()->json(['deleted' => true], 200);
     }
 
