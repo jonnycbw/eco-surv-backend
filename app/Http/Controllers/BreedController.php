@@ -19,7 +19,7 @@ class BreedController extends Controller
 
     public function show(Breed $breed)
     {
-        return response()->json(['data' => new BreedResource($breed)], 200);
+        return response()->json(['data' => new BreedResource($breed->with(['users','parks'])->get())], 200);
     }
 
     public function store(Request $request)

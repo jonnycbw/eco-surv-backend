@@ -49,5 +49,22 @@ class ParkController extends Controller
         return response()->json(['deleted' => true], 200);
     }
 
+    public function associate(Request $request, Park $park)
+    {
+        $data = $request->validate([
+            'type' => 'required',
+            'id' => 'required'
+        ]);
+       
+        if(Arr::get($data, 'type') == "breed")
+        {
+            $park->breeds()->syncWithoutDetaching([Arr::get($data, 'id')]);
+            return response()->json(['success' => true, 'breeds'=>$park->breeds ], 200);
+        }
+
+        return response()->json(['success' => false, 'message'=>'The was an error, check that you have provided the correct type & id'], 404);
+
+    }
+
 
 }

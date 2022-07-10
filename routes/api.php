@@ -19,8 +19,11 @@ use Illuminate\Support\Arr;
 
 // utilise the apiResource method to simplify REST
 Route::apiResource('breeds', BreedController::class);
-Route::apiResource('parks', ParksController::class);
+Route::apiResource('parks', ParkController::class);
 Route::apiResource('users', UsersController::class);
+
+Route::post('users/{user}/associate', [UserController::class, 'associate']);
+Route::post('parks/{park}/associate', [ParkController::class, 'associate']);
 
 
 // routes for accessing the dog.ceo API from an external API (non RESTful)
