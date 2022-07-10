@@ -13,22 +13,40 @@ class BreedController extends Controller
 
     public function index()
     {
+        $breeds = Breed::all();
+        return BreedResource::collection($breeds);
     }
 
-    public function show()
+    public function show(Breed $breed)
     {
+        return response()->json(['data' => new BreedResource($breed)], 200);
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $data = $request->validate([
+            'name' => 'required'
+        ]);
+
+        $breed = Breed::create($data);
+        return response()->json(['created' => true, 'data' => new BreedResource($breed)], 201);
     }
 
-    public function update()
+    public function update(Request $request, Breed $breed)
     {
+        $data = $request->validate([
+            'name' => 'sometimes'
+        ]);
+
+        $breed->update($data);
+
+        return response()->json(['updated' => true, 'data' => new BreedResource($breed)], 200);
     }
 
-    public function destroy()
+    public function destroy(Breed $breed)
     {
+        $breed->delete();
+        return response()->json(['deleted' => true], 200);
     }
 
 

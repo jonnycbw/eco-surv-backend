@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
-use App\Models\{BreedClient, Breed};
+use App\{BreedClient, Breed};
 
 class DatabaseSeeder extends Seeder
 {

@@ -16,15 +16,6 @@ use Illuminate\Support\Arr;
 |
 */
 
-Route::get("/test", function () {
-    $breedClient = new BreedClient();
-    $breeds = $breedClient->listAll();
-    $decoded = json_decode($breeds, true);
-    $formatted = array_keys(Arr::get($decoded, 'message', []));
-
-    Breed::insert($formatted);
-    // dd(Arr::flatten(json_decode($breeds, true)));
-});
 
 // utilise the apiResource method to simplify REST
 Route::apiResource('breeds', BreedController::class);
