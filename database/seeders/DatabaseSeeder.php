@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
+use App\Models\{BreedClient, Breed};
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $breedClient = new BreedClient();
+        $response = $breedClient->listAll();
+        $decoded = json_decode($response, true);
+        $breeds = array_keys(Arr::get($decoded, 'message', []));
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        foreach($breeds as $breed){
+            Breed::create(['name'=>$breed]);
+        }
     }
 }
