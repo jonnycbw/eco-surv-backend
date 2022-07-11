@@ -2,17 +2,14 @@
 
 ## Getting started 
 
-To get started with running my tech test, you'll firstly need to create a database and a `.env` file and then fill in the database variables in the `.env` file.
-
-- 1. Create a database
-- 2. update the .env file with your DB settings
+To get started with running my tech test, you'll firstly need to create a database and then fill in the database variables in the `.env` file.
 
 
 ## Seeding the data
-To run the seeder, navigate to the project directory and run `php artisan db:seed`
+To run the seeder, navigate to the project directory and run `php artisan db:seed`, this will call the dog.ceo API to return all the breeds and store them in the database.
 
 
-## Using the API with postman
+## Using the API with postman
 As the API is setup to accept and return JSON formatted data, you should add the following headers to your requests:
 
 `Accept: application/json`
@@ -31,11 +28,66 @@ This lead me to using `/breeds` for the second task, I hope this suffices.
 
 ## Task 2
 
-I hadn't used Redis with Laravel so this was my first time, I wasn't sure if I had implemented this correctly, but it seems to be working. I added a message to the responses to indicate where the data was provided from (cache / database).
+I hadn't used Redis in projects I'd been working with previously, so this was my first time. I wasn't sure if I had implemented this correctly, but it seems to be working. I added a message to the responses to indicate where the data was provided from (cache / database).
 
 To test this, you'll need to ensure you have a local redis server running and the correct configuration.
 
-## Task 3
+## Task 3 - GraphQL 
+
+I've not used graphQL with Laravel before and I didn't manage to get it working with mutations, but I was able to perform some basic queries.
+
+if you navigate to `/graphql-playground` there is an interface that you can use to query the models added to the application
+
+an example query : 
+
+```
+{
+  breeds{
+    id,
+    name,
+    
+    users{
+      id,
+      name,
+      location
+    }
+  }
+}
+```
+
+
+Sample response : 
+
+```
+{
+  "data": {
+    "breeds": [
+      {
+        "id": "1",
+        "name": "affenpinscher",
+        "users": []
+      },
+      {
+        "id": "2",
+        "name": "african",
+        "users": [
+          {
+            "id": "1",
+            "name": "jonny",
+            "location": "Preston"
+          }
+        ]
+      }
+    ...
+    }
+}
+```
+
+
+
+
+
+
 
 
 
