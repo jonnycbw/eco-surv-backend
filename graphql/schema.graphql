@@ -1,0 +1,28 @@
+
+
+type Query {
+   users: [User!]! @all
+   user(id: Int! @eq): User @find
+   parks: [Park!]! @all
+   park(id: Int! @eq): Park @find
+   breeds: [Breed!]! @all
+   breed(id: Int! @eq): Breed @find
+}
+
+type User {
+  id: ID!
+  name: String!
+  location: String!
+}
+
+type Breed {
+  id: ID!
+  name: String!
+  parks: Park! @morphToMany
+  users: [User!]! @morphToMany
+}
+
+type Park {
+  id: ID!
+  name: String
+}
